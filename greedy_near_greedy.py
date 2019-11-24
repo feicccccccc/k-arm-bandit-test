@@ -25,8 +25,8 @@ for i in range(0,10):
 
 # create the game
 
-greddy_game = Game(bandits)
-output = 0
+greedy_game = Game(bandits)
+output = [[] for _ in range(num_bandits)]
 output_mean = []
 output_variance = []
 
@@ -34,8 +34,8 @@ num_step = 1000
 num_game = 2000
 
 for i in range(0,num_bandits):
-    output_mean.append(greddy_game.bandits[i].mean)
-    output_variance.append(greddy_game.bandits[i].variance)
+    output_mean.append(greedy_game.bandits[i].mean)
+    output_variance.append(greedy_game.bandits[i].variance)
     print(" Arm {} mean = {}, variance = {}".format(i,output_mean[i],output_variance[i]))
 
 output_std = np.sqrt(output_variance)
@@ -49,6 +49,6 @@ plt.show()
 '''
 
 for i in range(num_step):
+    greedy_game.sample_once()
 
-print(output / 1000)
-print(greddy_game.bandits[0].mean)
+print(greedy_game)
