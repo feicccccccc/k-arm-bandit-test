@@ -20,7 +20,7 @@ num_bandits = 10
 
 bandits = []
 
-for i in range(0,10):
+for i in range(0,num_bandits):
     bandits.append(Bandit(mean=np.random.normal(mean_all_action,var_all_aciion), variance=var_single_game))
 
 # create the game
@@ -32,6 +32,7 @@ output_variance = []
 
 num_step = 1000
 num_game = 2000
+
 
 for i in range(0,num_bandits):
     output_mean.append(greedy_game.bandits[i].mean)
@@ -48,7 +49,47 @@ plt.savefig('bar_plot_with_error_bars.png')
 plt.show()
 '''
 
-for i in range(num_step):
-    greedy_game.sample_once()
+def multiple_game_greedy_action():
+    history = []
+    games = []
 
-print(greedy_game)
+    for i in range(0,num_game):
+        bandits = []
+        for _ in range(0, num_bandits):
+            bandits.append(Bandit(mean=np.random.normal(mean_all_action, var_all_aciion), variance=var_single_game))
+        cur_game = Game(bandits)
+        games.append(Game(bandits))
+
+
+    all_game_mean = 0
+
+    for i in range(num_step):
+        for j in range(num_game):
+            #print("game : {} , step : {}".format(j,i))
+            games[j].sample_once(near_greedy=False)
+            all_game_mean = all_game_mean + games[j].get_cur_mean()
+            #print("cur_mean : {}".format(games[j].get_cur_mean()))
+        #print(all_game_mean)
+        print("step {}".format(i))
+        history.append(all_game_mean / num_game)
+        all_game_mean = 0
+
+    plt.plot(history)
+    plt.show()
+
+def one_game_greedy_action():
+    history = []
+    for i in range(num_step):
+        greedy_game.sample_once(near_greedy=False)
+        history.append(greedy_game.get_cur_mean())
+
+    print(greedy_game.mean)
+    print(greedy_game.count)
+    print(greedy_game.get_total_reward() / num_step)
+
+    plt.plot(history)
+    plt.show()
+
+
+#one_game_greedy_action()
+multiple_game_greedy_action()
