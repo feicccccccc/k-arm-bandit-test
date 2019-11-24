@@ -23,8 +23,16 @@ class Game:
         self.results = [[] for _ in range(len(bandits))]
         self.mean = [0 for _ in range(len(bandits))]
         self.count = [0 for _ in range(len(bandits))]
+        self.correct_count = 0
         for bandit in bandits:
             self.bandits.append(bandit)
+        self.optimal_action = 0
+        max_reward = -10
+        for i, bandit in enumerate(self.bandits):
+            #print("{} {}".format(i, bandit))
+            if bandit.mean > max_reward:
+                max_reward = bandit.mean
+                self.optimal_action = i
 
     def get_reward(self):
         return (self.sample_action(), self.bandits[self.sample_action()].normal_sample())
@@ -43,7 +51,8 @@ class Game:
                 action = self.sample_action()
         else:
             action = self.sample_action()
-
+        if action == self.optimal_action:
+            self.correct_count =  self.correct_count + 1
         reward = self.bandits[action].normal_sample()
 
         self.results[action].append(reward)
